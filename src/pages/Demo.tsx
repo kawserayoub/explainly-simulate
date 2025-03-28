@@ -5,6 +5,8 @@ import { Card } from '@/components/ui/card';
 import GradientButton from '@/components/ui/GradientButton';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
+import { useQuery } from '@tanstack/react-query';
+import { Textarea } from '@/components/ui/textarea';
 
 const DemoPage = () => {
   const [file, setFile] = useState<File | null>(null);
@@ -169,6 +171,17 @@ const DemoPage = () => {
     }
   };
 
+  const useSampleTranscript = () => {
+    const sampleText = "Welcome to our lecture on climate science. Today we'll be discussing the greenhouse effect, global temperature trends, and potential mitigation strategies. The greenhouse effect is a natural process that warms the Earth's surface. When the Sun's energy reaches the Earth's atmosphere, some of it is reflected back to space and the rest is absorbed and re-radiated by greenhouse gases. The absorbed energy warms the atmosphere and the surface of the Earth.";
+    setTranscript(sampleText);
+    const blob = new Blob([sampleText], { type: "text/plain" });
+    setFile(new File([blob], "sample-transcript.txt", { type: "text/plain" }));
+    toast({
+      title: "Sample transcript selected",
+      description: "You can now process the sample transcript",
+    });
+  };
+
   return (
     <div className="container mx-auto px-4 py-12 max-w-4xl">
       <div className="text-center mb-12 animate-fade-in">
@@ -226,17 +239,7 @@ const DemoPage = () => {
             <div className="flex justify-between items-center">
               <button
                 className="text-explainly-blue underline text-sm"
-                onClick={() => {
-                  const sampleText = "Welcome to our lecture on climate science. Today we'll be discussing the greenhouse effect, global temperature trends, and potential mitigation strategies. The greenhouse effect is a natural process that warms the Earth's surface. When the Sun's energy reaches the Earth's atmosphere, some of it is reflected back to space and the rest is absorbed and re-radiated by greenhouse gases. The absorbed energy warms the atmosphere and the surface of the Earth.";
-                  setTranscript(sampleText);
-                  const blob = new Blob([sampleText], { type: "text/plain" });
-                  const sampleFile = new File([blob], "sample-transcript.txt", { type: "text/plain" });
-                  setFile(sampleFile);
-                  toast({
-                    title: "Sample transcript selected",
-                    description: "You can now process the sample transcript",
-                  });
-                }}
+                onClick={useSampleTranscript}
               >
                 Use sample transcript
               </button>
