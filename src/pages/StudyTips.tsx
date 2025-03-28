@@ -1,60 +1,92 @@
-
+import React from 'react';
 import { Link } from 'react-router-dom';
-import { Lightbulb } from 'lucide-react';
-import Card from '@/components/ui/Card';
-import GradientButton from '@/components/ui/GradientButton';
+import { ArrowLeft, Lightbulb } from 'lucide-react';
+import { Card } from '@/components/ui/card';
 
 const StudyTipsPage = () => {
   return (
-    <div className="container mx-auto px-4 py-12 max-w-4xl">
-      <div className="text-center mb-8 animate-fade-in">
+    <div className="container mx-auto px-4 py-12 max-w-4xl animate-fade-in">
+      <div className="text-center mb-8">
         <h1 className="text-3xl md:text-4xl font-bold text-explainly-navy mb-4">
           Study Tips
         </h1>
         <p className="text-explainly-gray text-lg max-w-2xl mx-auto">
-          Get personalized study recommendations based on your content.
+          Maximize your learning with these effective study tips.
         </p>
       </div>
 
-      <Card className="text-center py-12 animate-fade-in">
-        <div className="flex justify-center mb-6">
-          <div className="w-20 h-20 rounded-full bg-primary-gradient flex items-center justify-center">
-            <Lightbulb size={32} className="text-white" />
-          </div>
-        </div>
-        
-        <h2 className="text-2xl font-bold text-explainly-navy mb-4">
-          💡 Study Tips Assistant in progress!
-        </h2>
-        
-        <p className="text-explainly-gray max-w-lg mx-auto mb-8">
-          We're building an AI assistant that will analyze your learning materials and provide customized study strategies to help you learn more effectively.
-        </p>
-        
-        <div className="max-w-md mx-auto mb-8 bg-explainly-lightGray p-6 rounded-lg text-left">
-          <h3 className="font-semibold text-explainly-navy mb-3">Example Study Tips</h3>
-          <ul className="space-y-3 text-explainly-gray">
-            <li className="flex items-start">
-              <span className="text-explainly-blue mr-2">•</span>
-              <span>Focus on understanding the relationships between different neural network architectures</span>
+      <Card className="mb-8">
+        <div className="p-6">
+          <h2 className="text-xl font-semibold text-explainly-navy mb-4">
+            Effective Study Techniques
+          </h2>
+          <ul className="list-disc list-inside text-explainly-gray">
+            <li className="mb-2">
+              <strong>Spaced Repetition:</strong> Review material at increasing intervals to improve retention.
             </li>
-            <li className="flex items-start">
-              <span className="text-explainly-blue mr-2">•</span>
-              <span>Create a timeline of AI development to understand the historical context</span>
+            <li className="mb-2">
+              <strong>Active Recall:</strong> Test yourself frequently on the material rather than passively rereading it.
             </li>
-            <li className="flex items-start">
-              <span className="text-explainly-blue mr-2">•</span>
-              <span>Practice explaining transformer architectures in your own words</span>
+            <li className="mb-2">
+              <strong>Interleaving:</strong> Mix different subjects or topics during study sessions to enhance learning.
+            </li>
+            <li className="mb-2">
+              <strong>Elaboration:</strong> Explain concepts in your own words and connect them to what you already know.
             </li>
           </ul>
         </div>
-        
-        <Link to="/summary-preview">
-          <GradientButton>
-            Back to Summary
-          </GradientButton>
-        </Link>
       </Card>
+
+      <Card className="mb-8">
+        <div className="p-6">
+          <h2 className="text-xl font-semibold text-explainly-navy mb-4">
+            Optimize Your Study Environment
+          </h2>
+          <ul className="list-disc list-inside text-explainly-gray">
+            <li className="mb-2">
+              <strong>Minimize Distractions:</strong> Find a quiet place to study and turn off notifications.
+            </li>
+            <li className="mb-2">
+              <strong>Use Background Noise:</strong> If silence is distracting, try white noise or ambient music.
+            </li>
+            <li className="mb-2">
+              <strong>Stay Organized:</strong> Keep your study area tidy and have all necessary materials within reach.
+            </li>
+            <li className="mb-2">
+              <strong>Take Breaks:</strong> Short, regular breaks can improve focus and prevent burnout.
+            </li>
+          </ul>
+        </div>
+      </Card>
+
+      <Card className="mb-8">
+        <div className="p-6">
+          <h2 className="text-xl font-semibold text-explainly-navy mb-4">
+            Utilize Learning Tools
+          </h2>
+          <ul className="list-disc list-inside text-explainly-gray">
+            <li className="mb-2">
+              <strong>Flashcards:</strong> Use flashcards to memorize key terms and concepts.
+            </li>
+            <li className="mb-2">
+              <strong>Mind Maps:</strong> Create visual diagrams to organize and connect ideas.
+            </li>
+            <li className="mb-2">
+              <strong>Online Resources:</strong> Take advantage of online courses, videos, and interactive tools.
+            </li>
+            <li className="mb-2">
+              <strong>Study Groups:</strong> Collaborate with peers to discuss and reinforce learning.
+            </li>
+          </ul>
+        </div>
+      </Card>
+
+      <div className="flex justify-start mt-8">
+        <Link to="/" className="text-explainly-navy hover:text-explainly-blue flex items-center">
+          <ArrowLeft size={20} className="mr-2" />
+          Back to Home
+        </Link>
+      </div>
     </div>
   );
 };

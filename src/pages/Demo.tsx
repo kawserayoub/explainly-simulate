@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { File, Upload, CheckCircle2 } from 'lucide-react';
@@ -6,8 +5,6 @@ import { Card } from '@/components/ui/card';
 import GradientButton from '@/components/ui/GradientButton';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
-import { useQuery } from '@tanstack/react-query';
-import { Textarea } from '@/components/ui/textarea';
 
 const DemoPage = () => {
   const [file, setFile] = useState<File | null>(null);
@@ -109,7 +106,6 @@ const DemoPage = () => {
       const selectedFile = event.target.files[0];
       setFile(selectedFile);
       
-      // Read file content if it's a text file
       if (selectedFile.type === 'text/plain') {
         const reader = new FileReader();
         reader.onload = (e) => {
@@ -214,7 +210,6 @@ const DemoPage = () => {
               )}
             </div>
 
-            {/* Text area for manual transcript entry */}
             <div className="space-y-2">
               <label htmlFor="manual-transcript" className="text-sm font-medium text-explainly-navy">
                 Or paste your transcript text:
@@ -234,7 +229,6 @@ const DemoPage = () => {
                 onClick={() => {
                   const sampleText = "Welcome to our lecture on climate science. Today we'll be discussing the greenhouse effect, global temperature trends, and potential mitigation strategies. The greenhouse effect is a natural process that warms the Earth's surface. When the Sun's energy reaches the Earth's atmosphere, some of it is reflected back to space and the rest is absorbed and re-radiated by greenhouse gases. The absorbed energy warms the atmosphere and the surface of the Earth.";
                   setTranscript(sampleText);
-                  // Create a File object properly
                   const blob = new Blob([sampleText], { type: "text/plain" });
                   const sampleFile = new File([blob], "sample-transcript.txt", { type: "text/plain" });
                   setFile(sampleFile);
@@ -257,7 +251,6 @@ const DemoPage = () => {
               Processing Your Transcript
             </h3>
             
-            {/* Progress bar */}
             <div className="h-2 w-full bg-gray-200 rounded-full overflow-hidden">
               <div 
                 className="h-full bg-primary-gradient rounded-full transition-all duration-300 ease-out"
@@ -265,7 +258,6 @@ const DemoPage = () => {
               />
             </div>
             
-            {/* Steps */}
             <div className="space-y-4">
               {steps.map((step, index) => (
                 <div 

@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ChevronLeft, ChevronRight, CheckCircle, XCircle } from 'lucide-react';
-import Card from '@/components/ui/Card';
+import { Card } from '@/components/ui/card';
 import GradientButton from '@/components/ui/GradientButton';
 
 interface Question {
@@ -13,50 +13,54 @@ interface Question {
   explanation: string;
 }
 
+// Define sample questions before using them in the component
+const quizQuestions: Question[] = [
+  {
+    id: 1,
+    text: "What event is often cited as the breakthrough moment for deep learning in 2012?",
+    options: [
+      { id: "a", text: "IBM Watson winning Jeopardy" },
+      { id: "b", text: "The release of TensorFlow" },
+      { id: "c", text: "AlexNet winning the ImageNet competition" },
+      { id: "d", text: "Google's AlphaGo defeating Lee Sedol" }
+    ],
+    correctAnswer: "c",
+    explanation: "AlexNet, developed by Alex Krizhevsky, Ilya Sutskever, and Geoffrey Hinton, won the 2012 ImageNet competition with a significant improvement in image classification accuracy using deep convolutional neural networks. This moment is widely considered the breakthrough that sparked the current deep learning revolution."
+  },
+  {
+    id: 2,
+    text: "Which of the following is NOT a characteristic of transformer architectures?",
+    options: [
+      { id: "a", text: "Self-attention mechanisms" },
+      { id: "b", text: "Recurrent connections" },
+      { id: "c", text: "Parallel processing" },
+      { id: "d", text: "Positional encodings" }
+    ],
+    correctAnswer: "b",
+    explanation: "Transformer architectures, introduced in the paper 'Attention Is All You Need', specifically avoid recurrent connections. Instead, they rely entirely on self-attention mechanisms to process sequences in parallel, which has led to significant improvements in processing efficiency. Recurrent connections are a defining feature of RNNs, not transformers."
+  },
+  {
+    id: 3,
+    text: "What period is commonly referred to as the 'AI Winter'?",
+    options: [
+      { id: "a", text: "1970s" },
+      { id: "b", text: "1980s-1990s" },
+      { id: "c", text: "2000-2010" },
+      { id: "d", text: "2015-present" }
+    ],
+    correctAnswer: "b",
+    explanation: "The 'AI Winter' primarily refers to the period in the 1980s and early 1990s when funding and interest in AI research decreased significantly following unmet expectations and limitations of early AI approaches. During this time, many AI companies failed and research funding was cut as the field struggled to deliver on its promises."
+  }
+];
+
 const QuizPage = () => {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [selectedAnswers, setSelectedAnswers] = useState<{ [key: number]: string }>({});
   const [showExplanation, setShowExplanation] = useState<{ [key: number]: boolean }>({});
   const [quizCompleted, setQuizCompleted] = useState(false);
 
-  const questions: Question[] = [
-    {
-      id: 1,
-      text: "What event is often cited as the breakthrough moment for deep learning in 2012?",
-      options: [
-        { id: "a", text: "IBM Watson winning Jeopardy" },
-        { id: "b", text: "The release of TensorFlow" },
-        { id: "c", text: "AlexNet winning the ImageNet competition" },
-        { id: "d", text: "Google's AlphaGo defeating Lee Sedol" }
-      ],
-      correctAnswer: "c",
-      explanation: "AlexNet, developed by Alex Krizhevsky, Ilya Sutskever, and Geoffrey Hinton, won the 2012 ImageNet competition with a significant improvement in image classification accuracy using deep convolutional neural networks. This moment is widely considered the breakthrough that sparked the current deep learning revolution."
-    },
-    {
-      id: 2,
-      text: "Which of the following is NOT a characteristic of transformer architectures?",
-      options: [
-        { id: "a", text: "Self-attention mechanisms" },
-        { id: "b", text: "Recurrent connections" },
-        { id: "c", text: "Parallel processing" },
-        { id: "d", text: "Positional encodings" }
-      ],
-      correctAnswer: "b",
-      explanation: "Transformer architectures, introduced in the paper 'Attention Is All You Need', specifically avoid recurrent connections. Instead, they rely entirely on self-attention mechanisms to process sequences in parallel, which has led to significant improvements in processing efficiency. Recurrent connections are a defining feature of RNNs, not transformers."
-    },
-    {
-      id: 3,
-      text: "What period is commonly referred to as the 'AI Winter'?",
-      options: [
-        { id: "a", text: "1970s" },
-        { id: "b", text: "1980s-1990s" },
-        { id: "c", text: "2000-2010" },
-        { id: "d", text: "2015-present" }
-      ],
-      correctAnswer: "b",
-      explanation: "The 'AI Winter' primarily refers to the period in the 1980s and early 1990s when funding and interest in AI research decreased significantly following unmet expectations and limitations of early AI approaches. During this time, many AI companies failed and research funding was cut as the field struggled to deliver on its promises."
-    }
-  ];
+  // Use the predefined questions
+  const questions = quizQuestions;
 
   const handleAnswerSelect = (questionId: number, answerId: string) => {
     setSelectedAnswers(prev => ({

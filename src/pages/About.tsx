@@ -1,8 +1,5 @@
-
-import Card from '@/components/ui/Card';
-import GradientButton from '@/components/ui/GradientButton';
-import { Link } from 'react-router-dom';
-import { Users, Target, ShieldCheck, GitCompare } from 'lucide-react';
+import React from 'react';
+import { Card } from '@/components/ui/card';
 
 const AboutPage = () => {
   const teamMembers = [
