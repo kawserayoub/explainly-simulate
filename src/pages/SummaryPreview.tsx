@@ -2,11 +2,37 @@
 import { useState, useEffect } from 'react';
 import { useLocation, Link } from 'react-router-dom';
 import { Copy, CheckCheck } from 'lucide-react';
-import Card from '@/components/ui/Card';
+import Card from '@/components/ui/card';
 import GradientButton from '@/components/ui/GradientButton';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { useQuery } from '@tanstack/react-query';
+
+// Static sample summary content as a fallback
+const sampleSummary = `
+# Climate Science Overview
+
+## The Greenhouse Effect
+- Natural process that warms Earth's surface
+- Sun's energy is absorbed and re-radiated by greenhouse gases
+- These gases include water vapor, carbon dioxide, methane, and others
+- Without the greenhouse effect, Earth would be too cold for life
+
+## Global Temperature Trends
+- Earth's average temperature has increased by about 1°C since pre-industrial times
+- Rate of warming has accelerated in recent decades
+- 19 of the 20 warmest years on record have occurred since 2001
+- Arctic warming at twice the global average rate
+
+## Mitigation Strategies
+- Reducing fossil fuel emissions through renewable energy transition
+- Improving energy efficiency in buildings, transportation, and industry
+- Developing carbon capture and storage technologies
+- Protecting and restoring carbon sinks like forests and wetlands
+- International cooperation through agreements like the Paris Climate Accord
+
+Understanding these fundamentals is crucial for developing effective policies and technologies to address climate change challenges.
+`;
 
 const SummaryPreviewPage = () => {
   const location = useLocation();
@@ -53,32 +79,6 @@ const SummaryPreviewPage = () => {
     });
     setTimeout(() => setCopied(false), 2000);
   };
-
-  // Static sample summary content as a fallback
-  const sampleSummary = `
-# Climate Science Overview
-
-## The Greenhouse Effect
-- Natural process that warms Earth's surface
-- Sun's energy is absorbed and re-radiated by greenhouse gases
-- These gases include water vapor, carbon dioxide, methane, and others
-- Without the greenhouse effect, Earth would be too cold for life
-
-## Global Temperature Trends
-- Earth's average temperature has increased by about 1°C since pre-industrial times
-- Rate of warming has accelerated in recent decades
-- 19 of the 20 warmest years on record have occurred since 2001
-- Arctic warming at twice the global average rate
-
-## Mitigation Strategies
-- Reducing fossil fuel emissions through renewable energy transition
-- Improving energy efficiency in buildings, transportation, and industry
-- Developing carbon capture and storage technologies
-- Protecting and restoring carbon sinks like forests and wetlands
-- International cooperation through agreements like the Paris Climate Accord
-
-Understanding these fundamentals is crucial for developing effective policies and technologies to address climate change challenges.
-  `;
 
   return (
     <div className="container mx-auto px-4 py-12 max-w-4xl animate-fade-in">

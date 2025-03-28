@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { File, Upload, CheckCircle2 } from 'lucide-react';
-import Card from '@/components/ui/Card';
+import Card from '@/components/ui/card';
 import GradientButton from '@/components/ui/GradientButton';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
@@ -25,7 +25,6 @@ const DemoPage = () => {
     { icon: '📄', text: 'Creating Learning Aids' }
   ];
 
-  // Query to check if summary is available
   const { data: summary, refetch } = useQuery({
     queryKey: ['summary', transcriptId],
     queryFn: async () => {
@@ -45,17 +44,15 @@ const DemoPage = () => {
       return data;
     },
     enabled: !!transcriptId && isProcessing,
-    refetchInterval: isProcessing ? 2000 : false // Poll every 2 seconds while processing
+    refetchInterval: isProcessing ? 2000 : false
   });
 
-  // Effect to handle the processing animation and check for summary
   useEffect(() => {
     let interval: number | null = null;
     
     if (isProcessing) {
-      // Start progress animation
       const startTime = Date.now();
-      const totalDuration = 12000; // 12 seconds total
+      const totalDuration = 12000;
       const stepDuration = totalDuration / 3;
       
       interval = window.setInterval(() => {
@@ -63,7 +60,6 @@ const DemoPage = () => {
         const percentage = Math.min((elapsed / totalDuration) * 100, 100);
         setProgressPercentage(percentage);
         
-        // Update processing step
         if (elapsed < stepDuration) {
           setProcessingStep(0);
         } else if (elapsed < stepDuration * 2) {
@@ -73,10 +69,8 @@ const DemoPage = () => {
         } else {
           clearInterval(interval);
           
-          // Check for summary existence one last time
           refetch();
           
-          // Navigate to summary page after processing is complete
           if (summary || elapsed >= totalDuration) {
             setTimeout(() => {
               navigate('/summary-preview', { 
@@ -98,10 +92,8 @@ const DemoPage = () => {
     };
   }, [isProcessing, navigate, transcriptId, summary, refetch]);
 
-  // Effect to check if summary became available
   useEffect(() => {
     if (summary && isProcessing) {
-      // If summary is available, navigate to the summary page
       setIsProcessing(false);
       navigate('/summary-preview', { 
         state: { 
@@ -146,7 +138,6 @@ const DemoPage = () => {
     try {
       setIsProcessing(true);
       
-      // Upload transcript content to Supabase
       const { data, error } = await supabase
         .from('transcripts')
         .insert([
@@ -163,7 +154,6 @@ const DemoPage = () => {
         throw error;
       }
 
-      // Store the transcript ID for checking the summary later
       if (data && data[0]) {
         setTranscriptId(data[0].id);
       }
@@ -244,7 +234,10 @@ const DemoPage = () => {
                 onClick={() => {
                   const sampleText = "Welcome to our lecture on climate science. Today we'll be discussing the greenhouse effect, global temperature trends, and potential mitigation strategies. The greenhouse effect is a natural process that warms the Earth's surface. When the Sun's energy reaches the Earth's atmosphere, some of it is reflected back to space and the rest is absorbed and re-radiated by greenhouse gases. The absorbed energy warms the atmosphere and the surface of the Earth.";
                   setTranscript(sampleText);
-                  setFile(new File([sampleText], "sample-transcript.txt", { type: "text/plain" }));
+                  // Create a File object properly without using 'new' keyword incorrectly
+                  const blob = new Blob([sampleText], { type: "text/plain" });
+                  const sampleFile = new File([blob], "sample-transcript.txt", { type: "text/plain" });
+                  setFile(sampleFile);
                   toast({
                     title: "Sample transcript selected",
                     description: "You can now process the sample transcript",
