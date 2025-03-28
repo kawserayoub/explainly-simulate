@@ -5,12 +5,17 @@ import { File, Upload, CheckCircle2 } from 'lucide-react';
 import Card from '@/components/ui/Card';
 import GradientButton from '@/components/ui/GradientButton';
 import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
+import { useQuery } from '@tanstack/react-query';
+import { Textarea } from '@/components/ui/textarea';
 
 const DemoPage = () => {
   const [file, setFile] = useState<File | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const [processingStep, setProcessingStep] = useState(0);
   const [progressPercentage, setProgressPercentage] = useState(0);
+  const [transcript, setTranscript] = useState<string>('');
+  const [transcriptId, setTranscriptId] = useState<string | null>(null);
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -20,6 +25,30 @@ const DemoPage = () => {
     { icon: '📄', text: 'Creating Learning Aids' }
   ];
 
+  // Query to check if summary is available
+  const { data: summary, refetch } = useQuery({
+    queryKey: ['summary', transcriptId],
+    queryFn: async () => {
+      if (!transcriptId) return null;
+      
+      const { data, error } = await supabase
+        .from('summaries')
+        .select('*')
+        .eq('transcript_id', transcriptId)
+        .single();
+      
+      if (error) {
+        console.error('Error fetching summary:', error);
+        return null;
+      }
+      
+      return data;
+    },
+    enabled: !!transcriptId && isProcessing,
+    refetchInterval: isProcessing ? 2000 : false // Poll every 2 seconds while processing
+  });
+
+  // Effect to handle the processing animation and check for summary
   useEffect(() => {
     let interval: number | null = null;
     
@@ -43,10 +72,21 @@ const DemoPage = () => {
           setProcessingStep(2);
         } else {
           clearInterval(interval);
+          
+          // Check for summary existence one last time
+          refetch();
+          
           // Navigate to summary page after processing is complete
-          setTimeout(() => {
-            navigate('/summary-preview');
-          }, 1000);
+          if (summary || elapsed >= totalDuration) {
+            setTimeout(() => {
+              navigate('/summary-preview', { 
+                state: { 
+                  transcriptId: transcriptId,
+                  summary: summary?.content
+                } 
+              });
+            }, 1000);
+          }
         }
       }, 50);
     }
@@ -56,25 +96,88 @@ const DemoPage = () => {
         clearInterval(interval);
       }
     };
-  }, [isProcessing, navigate]);
+  }, [isProcessing, navigate, transcriptId, summary, refetch]);
+
+  // Effect to check if summary became available
+  useEffect(() => {
+    if (summary && isProcessing) {
+      // If summary is available, navigate to the summary page
+      setIsProcessing(false);
+      navigate('/summary-preview', { 
+        state: { 
+          transcriptId: transcriptId,
+          summary: summary.content
+        } 
+      });
+    }
+  }, [summary, isProcessing, navigate, transcriptId]);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files.length > 0) {
-      setFile(event.target.files[0]);
+      const selectedFile = event.target.files[0];
+      setFile(selectedFile);
+      
+      // Read file content if it's a text file
+      if (selectedFile.type === 'text/plain') {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const content = e.target?.result as string;
+          setTranscript(content);
+        };
+        reader.readAsText(selectedFile);
+      }
     }
   };
 
-  const handleUpload = () => {
-    if (file) {
+  const handleTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setTranscript(e.target.value);
+  };
+
+  const handleUpload = async () => {
+    if (!transcript && !file) {
+      toast({
+        title: "No content to process",
+        description: "Please enter text or select a file to upload",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
       setIsProcessing(true);
+      
+      // Upload transcript content to Supabase
+      const { data, error } = await supabase
+        .from('transcripts')
+        .insert([
+          { 
+            content: transcript, 
+            file_name: file?.name || 'manual-entry.txt',
+            file_type: file?.type || 'text/plain',
+            processed: false
+          }
+        ])
+        .select();
+
+      if (error) {
+        throw error;
+      }
+
+      // Store the transcript ID for checking the summary later
+      if (data && data[0]) {
+        setTranscriptId(data[0].id);
+      }
+
       toast({
         title: "Processing started",
         description: "We're analyzing your transcript...",
       });
-    } else {
+    } catch (error) {
+      console.error('Error uploading transcript:', error);
+      setIsProcessing(false);
       toast({
-        title: "No file selected",
-        description: "Please select a file to upload",
+        title: "Upload failed",
+        description: "There was an error uploading your transcript. Please try again.",
         variant: "destructive",
       });
     }
@@ -100,7 +203,7 @@ const DemoPage = () => {
               </div>
               <h3 className="text-xl font-medium text-explainly-navy mb-2">Upload Your Transcript</h3>
               <p className="text-explainly-gray mb-6">
-                Drag and drop your file here, or click to browse
+                Drag and drop your file here, click to browse, or paste your text below
               </p>
               <input
                 type="file"
@@ -121,11 +224,27 @@ const DemoPage = () => {
               )}
             </div>
 
+            {/* Text area for manual transcript entry */}
+            <div className="space-y-2">
+              <label htmlFor="manual-transcript" className="text-sm font-medium text-explainly-navy">
+                Or paste your transcript text:
+              </label>
+              <Textarea
+                id="manual-transcript"
+                placeholder="Paste or type your transcript content here..."
+                value={transcript}
+                onChange={handleTextChange}
+                className="min-h-[150px]"
+              />
+            </div>
+
             <div className="flex justify-between items-center">
               <button
                 className="text-explainly-blue underline text-sm"
                 onClick={() => {
-                  setFile(new File(["Sample transcript content"], "sample-transcript.txt"));
+                  const sampleText = "Welcome to our lecture on climate science. Today we'll be discussing the greenhouse effect, global temperature trends, and potential mitigation strategies. The greenhouse effect is a natural process that warms the Earth's surface. When the Sun's energy reaches the Earth's atmosphere, some of it is reflected back to space and the rest is absorbed and re-radiated by greenhouse gases. The absorbed energy warms the atmosphere and the surface of the Earth.";
+                  setTranscript(sampleText);
+                  setFile(new File([sampleText], "sample-transcript.txt", { type: "text/plain" }));
                   toast({
                     title: "Sample transcript selected",
                     description: "You can now process the sample transcript",
