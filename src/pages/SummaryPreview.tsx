@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import { useLocation, Link } from 'react-router-dom';
 import { Copy, CheckCheck } from 'lucide-react';
-import Card from '@/components/ui/card';
+import { Card } from '@/components/ui/card';
 import GradientButton from '@/components/ui/GradientButton';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';

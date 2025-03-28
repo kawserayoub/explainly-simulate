@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { File, Upload, CheckCircle2 } from 'lucide-react';
-import Card from '@/components/ui/card';
+import { Card } from '@/components/ui/card';
 import GradientButton from '@/components/ui/GradientButton';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
@@ -234,7 +234,7 @@ const DemoPage = () => {
                 onClick={() => {
                   const sampleText = "Welcome to our lecture on climate science. Today we'll be discussing the greenhouse effect, global temperature trends, and potential mitigation strategies. The greenhouse effect is a natural process that warms the Earth's surface. When the Sun's energy reaches the Earth's atmosphere, some of it is reflected back to space and the rest is absorbed and re-radiated by greenhouse gases. The absorbed energy warms the atmosphere and the surface of the Earth.";
                   setTranscript(sampleText);
-                  // Create a File object properly without using 'new' keyword incorrectly
+                  // Create a File object properly
                   const blob = new Blob([sampleText], { type: "text/plain" });
                   const sampleFile = new File([blob], "sample-transcript.txt", { type: "text/plain" });
                   setFile(sampleFile);
